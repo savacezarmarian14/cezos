@@ -1,3 +1,3 @@
 # cezos
 My version of monolithic kernel
-![Alt Text](gdt.png)
+![Alt Text](gdt_white.png)
