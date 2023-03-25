@@ -1,19 +1,15 @@
-ASM=nasm
-ASM_FLAGS=-f bin
+all: clean build
 
-QEMU=qemu-system-i386
-QEMUFLAGS=
+boot.o: boot.asm
+	nasm -f elf32 boot.asm -o boot.o
+	
+main.o: main.c
+	gcc -m32 -fno-pie -I inc -c -g main.c -o main.o
 
-BOOTLOADER=bootloader
-
-build: clean
-	$(ASM) $(ASM_FLAGS) $(BOOTLOADER).asm -o $(BOOTLOADER).bin
-
-run: build
-	$(QEMU) $(QEMUFLAGS) $(BOOTLOADER).bin
-
-gdb: build
-	$(QEMU) $(QEMUFLAGS) -s -hda $(BOOTLOADER).bin
+build: boot.o main.o
+	ld -m elf_i386 -T linker.ld -o kernel.bin main.o boot.o
 
 clean:
-	rm -f $(BOOTLOADER).bin
+	rm -rf boot.o main.o kernel.bin
+
+
