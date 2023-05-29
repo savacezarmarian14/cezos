@@ -1,6 +1,8 @@
 #include <console.h>
 #include <string.h>
 #include <stdio.h>
+#include <kmap.h>
+
 
 /* Init Window */
 void say_hi(void)
@@ -28,9 +30,6 @@ void init(void)
     /* Activate and initialize console for printing */
     console_init();
     say_hi();
-
-
-
-
+    initialize_memory();
     while(1);
 }

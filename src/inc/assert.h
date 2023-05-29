@@ -3,7 +3,7 @@
 #ifndef __ASSERT_H__
 #define __ASSERT_H__
 
-#include <inc/stdio.h>
+#include <stdio.h>
 
 void _warn(const char*, int, const char*, ...);
 void _panic(const char*, int, const char*, ...) __attribute__((noreturn));

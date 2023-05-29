@@ -22,6 +22,7 @@ SECTIONS
 		*(.rodata .rodata.* .gnu.linkonce.r.*)
 	}
 
+
 	/* Adjust the address for the data segment to the next page */
 	. = ALIGN(0x1000);
 
@@ -33,10 +34,10 @@ SECTIONS
 	.bss : {
 		PROVIDE(start_bss = .);
 		*(.bss)
-		PROVIDE(end_bss = .);
-		BYTE(0)
+
 	}
 
+	PROVIDE(end_bss = .);
 	/DISCARD/ : {
 		*(.eh_frame .note.GNU-stack)
 	}

@@ -8,22 +8,22 @@
 
 #endif  /* For the case we include this header in some .asm file*/
 
-//                          
+//
 //                     Global Descriptor Table Entry
 // 0x00 |---------------------------------------------------------|
 //      |  base   |  flags  |  limit   |  access byte |   base    |
-//      | [24-31] |  [0-3]  | [16-19]  |    [0-7]     |  [16-23]  |   
+//      | [24-31] |  [0-3]  | [16-19]  |    [0-7]     |  [16-23]  |
 //      |---------------------------------------------------------|
 //      |            base              |            limit         |
 //      |           [0-15]             |            [0-15]        |
 //      |---------------------------------------------------------|
-// 0x08   
+// 0x08
 //
 //
 //
 
 /* Gobal Descriptor table index */
-#define GD_NULL                     0x00        // First Segment 
+#define GD_NULL                     0x00        // First Segment
 #define GD_KERNEL_TEXT              0x08        // Second Segment
 #define GD_KERNEL_DATA              0x10        // Third Segment
 #define GD_USER_TEXT                0x18        // Fourth Segment
@@ -100,16 +100,16 @@
 #define KERNEL_STACK_GUARD          (8 * PAGE_SIZE)
 
 /* Memory mapped I/O */
-#define MEMORY_MAPPED_IO_LIMIT      (KERNEL_STACK_TOP        - PAGE_TABLE_SIZE)
+#define MEMORY_MAPPED_IO_LIMIT      (KERNEL_STACK_TOP - PAGE_TABLE_SIZE)
 #define MEMORY_MAPPED_IO_BASE       (MEMORY_MAPPED_IO_LIMIT  - PAGE_TABLE_SIZE)
 
 /* User */
 #define U_LIMIT                  (MEMORY_MAPPED_IO_BASE)
-#define U_VIRTUAL_PAGE_TABLE     (USER_LIMIT              - PAGE_TABLE_SIZE)
-#define U_PAGES                  (USER_VIRTUAL_PAGE_TABLE - PAGE_TABLE_SIZE)
-#define U_ENVIRONMENTS           (USER_PAGES              - PAGE_TABLE_SIZE)
-#define U_TOP                    (USER_ENVIRONMENTS)
-#define U_EXCEPTION_STACK_TOP    (USER_TOP)
+#define U_VIRTUAL_PAGE_TABLE     (U_LIMIT - PAGE_TABLE_SIZE)
+#define U_PAGES                  (U_VIRTUAL_PAGE_TABLE - PAGE_TABLE_SIZE)
+#define U_ENVIRONMENTS           (U_PAGES - PAGE_TABLE_SIZE)
+#define U_TOP                    (U_ENVIRONMENTS)
+#define U_EXCEPTION_STACK_TOP    (U_TOP)
 #define U_TEXT                   (2 * PAGE_TABLE_SIZE)
 
 /* Temporary */
@@ -130,6 +130,8 @@
 typedef uint32_t pte_t;
 typedef uint32_t pde_t;
 
-#endif /* __ASSEMBLER__ */
+#endif /* !__ASSEMBLER__ */
+
+
 
 #endif /* __INC_MEMLAYOUT_H__*/

@@ -14,7 +14,7 @@ LIB_SRC_DIR := $(SOURCE_DIR)/lib
 INC_SRC_DIR := $(SOURCE_DIR)/inc
 
 # Define compiler and linker flags
-CC := gcc
+CC := i386-jos-elf-gcc
 ASM := nasm
 CFLAGS := -m32 -fno-pie -c -g -fno-stack-protector
 CFLAGS += -std=gnu99
@@ -23,7 +23,7 @@ CFLAGS += -Wno-builtin-declaration-mismatch -Wno-unused-parameter
 CFLAGS += -static-libgcc -lgcc -ffreestanding
 
 ASMFLAGS := -f elf32
-LD := ld
+LD := i386-jos-elf-ld
 LDFLAGS := -m elf_i386
 INCLUDE := -I $(INC_SRC_DIR) -I $(SOURCE_DIR)/kernel -I $(SOURCE_DIR)/lib
 
