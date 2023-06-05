@@ -126,21 +126,26 @@
 
 #include <types.h>
 
+struct Pseudodesc {
+	uint16_t l_limit;
+	uint32_t l_base;
+} __attribute__((packed));
+
 // Segment Descriptors
 struct Segdesc {
-	unsigned sd_lim_15_0 : 16;  // Low bits of segment limit
-	unsigned sd_base_15_0 : 16; // Low bits of segment base address
-	unsigned sd_base_23_16 : 8; // Middle bits of segment base address
-	unsigned sd_type : 4;       // Segment type (see STS_ constants)
-	unsigned sd_s : 1;          // 0 = system, 1 = application
-	unsigned sd_dpl : 2;        // Descriptor Privilege Level
-	unsigned sd_p : 1;          // Present
-	unsigned sd_lim_19_16 : 4;  // High bits of segment limit
-	unsigned sd_avl : 1;        // Unused (available for software use)
-	unsigned sd_rsv1 : 1;       // Reserved
-	unsigned sd_db : 1;         // 0 = 16-bit segment, 1 = 32-bit segment
-	unsigned sd_g : 1;          // Granularity: limit scaled by 4K when set
-	unsigned sd_base_31_24 : 8; // High bits of segment base address
+	unsigned int lim_15_0 : 16;  // Low bits of segment limit
+	unsigned int base_15_0 : 16; // Low bits of segment base address
+	unsigned int base_23_16 : 8; // Middle bits of segment base address
+	unsigned int type : 4;       // Segment type (see STS_ constants)
+	unsigned int s : 1;          // 0 = system, 1 = application
+	unsigned int dpl : 2;        // Descriptor Privilege Level
+	unsigned int p : 1;          // Present
+	unsigned int lim_19_16 : 4;  // High bits of segment limit
+	unsigned int avl : 1;        // Unused (available for software use)
+	unsigned int rsv1 : 1;       // Reserved
+	unsigned int db : 1;         // 0 = 16-bit segment, 1 = 32-bit segment
+	unsigned int g : 1;          // Granularity: limit scaled by 4K when set
+	unsigned int base_31_24 : 8; // High bits of segment base address
 };
 // Null segment
 #define SEG_NULL	{ 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
@@ -179,6 +184,9 @@ struct Segdesc {
 #define STS_CG32	0xC	    // 32-bit Call Gate
 #define STS_IG32	0xE	    // 32-bit Interrupt Gate
 #define STS_TG32	0xF	    // 32-bit Trap Gate
+
+#define KERNEL_PRIVILAGE_LEVEL 0
+#define USER_PRIVILAGE_LEVEL 3
 
 #endif
 

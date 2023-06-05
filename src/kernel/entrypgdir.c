@@ -1,24 +1,11 @@
 #include <mmu.h>
 #include <memlayout.h>
 
+/* A static page table that maps virt address to phys address */
+/* This will change after some shit during memory initialization */
 pte_t entry_pgtable[NUMBER_PTENTRIES];
 
-// The entry.S page directory maps the first 4MB of physical memory
-// starting at virtual address KERNEL_BASE_ADDRESS (that is, it maps virtual
-// addresses [KERNEL_BASE_ADDRESS, KERNEL_BASE_ADDRESS+4MB) to physical addresses [0, 4MB)).
-// We choose 4MB because that's how much we can map with one page
-// table and it's enough to get us through early boot.  We also map
-// virtual addresses [0, 4MB) to physical addresses [0, 4MB); this
-// region is critical for a few instructions in entry.S and then we
-// never use it again.
-//
-// Page directories (and page tables), must start on a page boundary,
-// hence the "__aligned__" attribute.  Also, because of restrictions
-// related to linking and static initializers, we use "x + PTE_P"
-// here, rather than the more standard "x | PTE_P".  Everywhere else
-// you should use "|" to combine flags.
-__attribute__((__aligned__(PAGE_SIZE)))
-pde_t entry_pgdir[NUMBER_PDENTRIES] = {
+__attribute__((__aligned__(PAGE_SIZE))) pde_t entry_pgdir[NUMBER_PDENTRIES] = {
 	// Map VA's [0, 4MB) to PA's [0, 4MB)
 	[0]
 		= ((virtaddr_t)entry_pgtable - KERNEL_BASE_ADDRESS) + PTE_P,
@@ -31,9 +18,9 @@ pde_t entry_pgdir[NUMBER_PDENTRIES] = {
 // physical page 1, etc.
 __attribute__((__aligned__(PAGE_SIZE)))
 pte_t entry_pgtable[NUMBER_PTENTRIES] = {
-	0x000000 | PTE_P | PTE_W,
-	0x001000 | PTE_P | PTE_W,
-	0x002000 | PTE_P | PTE_W,
+	0x000000 | PTE_P | PTE_W, /* pp 0 */
+	0x001000 | PTE_P | PTE_W, /* pp 2 */
+	0x002000 | PTE_P | PTE_W, /* ...  */
 	0x003000 | PTE_P | PTE_W,
 	0x004000 | PTE_P | PTE_W,
 	0x005000 | PTE_P | PTE_W,

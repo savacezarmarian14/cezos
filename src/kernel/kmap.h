@@ -5,15 +5,22 @@
 #include <memlayout.h>
 #include <stdio.h>
 
+#define MEM_ERROR_LOOP(msg)									\
+{															\
+	cprintf("[Error] %s %s %s\n", __FILE__, __LINE__, msg);	\
+	while(1);												\
+}
+
+#define PAGE_ZERO_FILLED		(1 << 0)
+
+
 extern char *bootstacktop, *bootstack;
 
 struct page_status {
-	virtaddr_t vaddr;
-	physaddr_t paddr;
-
 	struct page_status *next_free;
 	size_t refs;
 };
+
 
 
 extern struct page_status *pages;
@@ -26,10 +33,10 @@ static physaddr_t
 _paddr(const char *file, int line, void *kva)
 {
 	physaddr_t pa = (physaddr_t)kva - KERNEL_BASE_ADDRESS;
-	cprintf("[Info]: Conversion from V:%x P:%x\n", (physaddr_t)kva, pa);
+	// cprintf("[Info]: Conversion from V:%x P:%x\n", (physaddr_t)kva, pa);
 
 	if (pa < 0) {
-		cprintf("[Error] [_paddr] Conversion failed. Invalid address %x",
+		cprintf("[Error] [_paddr] Conversion failed. Invalid address %x\n",
 			(physaddr_t)kva);
 		return -1;
 	}
@@ -41,12 +48,12 @@ static void *
 _kaddr(const char *file, int line, physaddr_t pa)
 {
 	if (PGNUM(pa) >= pages_count) {
-		cprintf("[Error] [_kaddr] Invalid phys address %x", pa);
+		cprintf("[Error] [_kaddr] Invalid phys address %x\n", pa);
 		return NULL;
 	}
 
 	void *kva = (void *)(pa + KERNEL_BASE_ADDRESS);
-	cprintf("[Info]: Conversion from P:%x V: kva");
+	// cprintf("[Info]: Conversion from P:%x V: %p\n", kva);
 
 	return kva;
 }
@@ -83,19 +90,18 @@ page2kva(struct page_status *ps)
 /* Get the physical layout and initialize memory management */
 void				initialize_memory(void);
 
-void 				page_create(void);
-void				init_pages(void);
+void				init_pages(struct page_status *);
 struct page_status *page_alloc(int flags);
-void				page_free(struct page_status *);
-int					page_add(pde_t *page_directory, struct page_status *ps,
+void				free_page(struct page_status *);
+int					insert_page(pde_t *page_directory, struct page_status *ps,
 						void *virtaddr, int permissions);
-void 				page_remove(pde_t page_directory, void *virtaddr);
-struct page_status *page_lookup(pde_t *page_directory, void *virtaddr,
+void 				remove_page(pde_t *page_directory, void *virtaddr);
+struct page_status *search_page(pde_t *page_directory, void *virtaddr,
 						pte_t **pte_buffer);
 
-void 				invalidate_tlb(pde_t *pgdir, void *va);
+void 				invalidate_tlb(void *va);
 
-pte_t 				*pgdir_walk(pde_t *pgdir, const void *va, int create);
+pte_t 				*get_page_table(pde_t *pgdir, const void *va, int create);
 
 
 

@@ -30,6 +30,12 @@
 #define GD_USER_DATA                0x20        // Fifth Segment
 #define GD_TASK_SEGMENT_SELECTOR    0x28        // Sixth Segment
 
+#define GD_NULL_INDEX		0x0
+#define GD_KT_INDEX			0x1
+#define GD_KD_INDEX			0x2
+#define GD_UT_INDEX			0x3
+#define GD_UD_INDEX			0x4
+#define GD_TSS_INDEX		0x5
 
 /*
  * Virtual memory map:                                Permissions

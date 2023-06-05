@@ -14,16 +14,19 @@ LIB_SRC_DIR := $(SOURCE_DIR)/lib
 INC_SRC_DIR := $(SOURCE_DIR)/inc
 
 # Define compiler and linker flags
-CC := i386-jos-elf-gcc
+#CC := i386-jos-elf-gcc
+CC := gcc
 ASM := nasm
-CFLAGS := -m32 -fno-pie -c -g -fno-stack-protector
+CFLAGS := -m32 -fno-pie -c -g -fno-stack-protector -O0
 CFLAGS += -std=gnu99
 CFLAGS += -static
 CFLAGS += -Wno-builtin-declaration-mismatch -Wno-unused-parameter
 CFLAGS += -static-libgcc -lgcc -ffreestanding
 
 ASMFLAGS := -f elf32
-LD := i386-jos-elf-ld
+#LD := i386-jos-elf-ld
+LD := ld
+
 LDFLAGS := -m elf_i386
 INCLUDE := -I $(INC_SRC_DIR) -I $(SOURCE_DIR)/kernel -I $(SOURCE_DIR)/lib
 
@@ -63,7 +66,12 @@ $(OS_TARGET): build
 	dd if=$(KERN_BUILD_DIR)/kernel of=$(OS_TARGET)~ seek=1 conv=notrunc 2>/dev/null
 	mv $(OS_TARGET)~ $(OS_TARGET)
 
+
+
 build: $(BOOT_TARGET) $(KERN_TARGET)
+
+build_verbose: CFLAGS += -D VERBOSE
+build_verbose: $(BOOT_TARGET) $(KERN_TARGET)
 
 # Define the rule to build the target executable
 $(BOOT_TARGET): $(BOOT_OBJS)
@@ -72,6 +80,7 @@ $(BOOT_TARGET): $(BOOT_OBJS)
 	perl $(BOOT_SRC_DIR)/sign.pl $(BOOT_BUILD_DIR)/bootloader 
 $(KERN_TARGET): $(KERN_OBJS)
 	$(LD) $(LDFLAGS) -T $(KERN_SRC_DIR)/kernel.ld -o $@ $^
+
 
 # Define the rule to build object files from C source files
 $(BOOT_BUILD_DIR)/%.o: $(BOOT_SRC_DIR)/%.c

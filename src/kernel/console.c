@@ -251,6 +251,8 @@ void console_init(void)
 
 }
 
+
+
 /***** General device-independent console code *****/
 // Here we manage the console input buffer,
 // where we stash characters received from the keyboard or serial port
